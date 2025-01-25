@@ -1,0 +1,49 @@
+# Eclipse specific files
+.classpath
+.project
+.settings/
+
+# Maven specific files
+target/
+!target/*.jar
+
+# Logs
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IntelliJ IDEA specific files (optional if using IntelliJ later)
+.idea/
+*.iml
+
+# Java compiled files
+*.class
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~.nib
+*.stackdump
+
+# Other IDE files
+*.vscode/
+
+# Node.js related (if adding a frontend later)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Generated files
+*.generated
+*.gwt.xml
+
+# Coverage and test output
+coverage/
+test-output/
+
+HELP.MD
