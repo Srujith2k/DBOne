@@ -10,19 +10,20 @@ DBOne is a powerful and flexible Java-based library designed to connect with var
 - **API Integration**: Expose database connection testing and management APIs via a Spring Boot backend.
 - **Swagger Documentation**: Interactive API documentation for easy testing and usage.
 - **Pluggable JAR**: A lightweight JAR file that can be used in Java projects for database connectivity.
+- **Run Custom Queries**: APIs to run dynamic queries on any supported database.
 - **Extendable**: Future-ready for building desktop and web applications using the provided APIs.
 
 ---
 
 ## How It Works
 1. **Backend API**:
-   - A Spring Boot application with endpoints for testing database connections.
+   - A Spring Boot application with endpoints for testing database connections and running queries.
    - Supports major databases like MySQL, PostgreSQL, SQLite, and H2.
    - APIs are documented with Swagger UI for easy interaction.
 
 2. **JAR Integration**:
-   - A standalone JAR that can be included in any Java project to manage database connections.
-   - Provides flexibility to configure database URLs, usernames, and passwords programmatically.
+   - A standalone JAR that can be included in any Java project to manage database connections and execute queries.
+   - Provides flexibility to configure hostnames, ports, databases, usernames, and passwords programmatically.
 
 3. **Frontend Options**:
    - Plan to develop desktop and web applications that consume the backend APIs.
@@ -35,6 +36,7 @@ DBOne/
 ├── src/main/java/com/acender/dbone
 │   ├── config               # Swagger and global configurations
 │   ├── controller           # REST API controllers for database connectivity
+│   ├── client               # DBOne client for integration into other projects
 │   ├── DbOneApplication.java  # Main Spring Boot application class
 ├── src/main/resources
 │   ├── application.properties  # Spring Boot configuration file
@@ -78,6 +80,62 @@ DBOne/
 
 ---
 
+### Integrating the JAR into Your Project
+
+1. **Add the Dependency**:
+   If published to a Maven repository, include the following dependency in your `pom.xml`:
+   ```xml
+   <dependency>
+       <groupId>com.acender</groupId>
+       <artifactId>dbone</artifactId>
+       <version>0.0.1-SNAPSHOT</version>
+   </dependency>
+   ```
+
+   If the JAR file is provided directly, add it to your project’s classpath.
+
+2. **Using the `DBOneClient`**:
+   Import and use the `DBOneClient` to interact with the APIs.
+
+**Example 1: Testing a Database Connection**
+```java
+import com.acender.dbone.client.DBOneClient;
+
+public class Main {
+    public static void main(String[] args) {
+        DBOneClient client = new DBOneClient("http://localhost:8080/api/db");
+        String response = client.testMySQLConnection("localhost", 3306, "testdb", "root", "password123");
+        System.out.println(response);
+    }
+}
+```
+
+**Example 2: Running a Custom Query**
+```java
+import com.acender.dbone.client.DBOneClient;
+
+import java.util.Map;
+
+public class QueryExample {
+    public static void main(String[] args) {
+        DBOneClient client = new DBOneClient("http://localhost:8080/api/db");
+        
+        Map<String, Object> result = client.executeQuery(
+            "com.mysql.cj.jdbc.Driver",
+            "localhost",
+            3306,
+            "testdb",
+            "root",
+            "password123",
+            "SELECT * FROM users"
+        );
+        System.out.println(result);
+    }
+}
+```
+
+---
+
 ### Testing Database Connections
 
 1. Open the Swagger UI.
@@ -90,7 +148,9 @@ DBOne/
 3. Example request body:
    ```json
    {
-       "url": "jdbc:mysql://localhost:3306/testdb",
+       "host": "localhost",
+       "port": 3306,
+       "database": "testdb",
        "username": "root",
        "password": "password123"
    }
@@ -102,53 +162,51 @@ DBOne/
 
 ---
 
-### Example Endpoints
+### Running Custom Queries
+
+Use the `/api/db/query` endpoint to run custom SQL queries. Example request body:
+
+```json
+{
+    "driverClass": "com.mysql.cj.jdbc.Driver",
+    "host": "localhost",
+    "port": 3306,
+    "database": "testdb",
+    "username": "root",
+    "password": "password123",
+    "query": "SELECT * FROM users"
+}
+```
+
+**Response**:
+- A JSON object containing query results.
+
+---
+
+## Example Endpoints
 1. **Test MySQL Connection**:
    ```http
    POST /api/db/mysql/test
-   ```
-   **Request Body**:
-   ```json
-   {
-       "url": "jdbc:mysql://localhost:3306/testdb",
-       "username": "root",
-       "password": "password123"
-   }
    ```
 
 2. **Test PostgreSQL Connection**:
    ```http
    POST /api/db/postgresql/test
    ```
-   **Request Body**:
-   ```json
-   {
-       "url": "jdbc:postgresql://localhost:5432/testdb",
-       "username": "postgres",
-       "password": "password123"
-   }
-   ```
 
 3. **Test SQLite Connection**:
    ```http
    POST /api/db/sqlite/test
-   ```
-   **Request Body**:
-   ```json
-   {
-       "url": "jdbc:sqlite:/path/to/testdb.db"
-   }
    ```
 
 4. **Test H2 Connection**:
    ```http
    POST /api/db/h2/test
    ```
-   **Request Body**:
-   ```json
-   {
-       "url": "jdbc:h2:mem:testdb"
-   }
+
+5. **Run Custom Query**:
+   ```http
+   POST /api/db/query
    ```
 
 ---
@@ -157,7 +215,7 @@ DBOne/
 - **Desktop Application**: A JavaFX-based application for GUI-based interaction with the database.
 - **Web Application**: A React-based frontend for a user-friendly database management experience.
 - **Additional Database Support**: Oracle, MongoDB, etc.
-- **Custom Query APIs**: Allow users to execute queries directly through the backend.
+- **Advanced Query Features**: APIs for batch processing, joins, and database migrations.
 
 ---
 
@@ -185,7 +243,6 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 ### Future Licensing
 Additional premium features may be released under a commercial license in the future.
-
 
 ---
 
