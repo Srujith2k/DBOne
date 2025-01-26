@@ -15,21 +15,31 @@
 	<name>dbone</name>
 	<description>A jar that can be integrated to any java project to connect
 		with the databases</description>
-	<url />
+	<url>https://github.com/Srujith2k/DBOne</url>
 	<licenses>
-		<license />
+		<license>
+			<name>Apache License 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
 	</licenses>
 	<developers>
-		<developer />
+		<developer>
+			<id>acender</id>
+			<name>Srujith</name>
+			<email>srujith2k@gmail.com</email>
+		</developer>
 	</developers>
 	<scm>
-		<connection />
-		<developerConnection />
-		<tag />
-		<url />
+		<connection>scm:git:git://github.com/Srujith2k/DBOne.git</connection>
+		<developerConnection>scm:git:ssh://github.com:Srujith2k/DBOne.git</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/Srujith2k/DBOne</url>
 	</scm>
 	<properties>
 		<java.version>23</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
 	<dependencies>
 		<dependency>
