@@ -7,23 +7,22 @@ DBOne is a powerful and flexible Java-based library designed to connect with var
 
 ## Features
 - **Universal Database Support**: Connect to MySQL, PostgreSQL, SQLite, H2, and more.
-- **API Integration**: Expose database connection testing and management APIs via a Spring Boot backend.
+- **Database-Specific Query APIs**: Run queries tailored for specific databases via dedicated endpoints.
 - **Swagger Documentation**: Interactive API documentation for easy testing and usage.
 - **Pluggable JAR**: A lightweight JAR file that can be used in Java projects for database connectivity.
-- **Run Custom Queries**: APIs to run dynamic queries on any supported database.
 - **Extendable**: Future-ready for building desktop and web applications using the provided APIs.
 
 ---
 
 ## How It Works
 1. **Backend API**:
-   - A Spring Boot application with endpoints for testing database connections and running queries.
+   - A Spring Boot application with endpoints for testing database connections and running queries for each database type.
    - Supports major databases like MySQL, PostgreSQL, SQLite, and H2.
    - APIs are documented with Swagger UI for easy interaction.
 
 2. **JAR Integration**:
-   - A standalone JAR that can be included in any Java project to manage database connections and execute queries.
-   - Provides flexibility to configure hostnames, ports, databases, usernames, and passwords programmatically.
+   - A standalone JAR that can be included in any Java project to manage database connections and execute queries programmatically.
+   - Provides flexibility to configure hostnames, ports, databases, usernames, and passwords.
 
 3. **Frontend Options**:
    - Plan to develop desktop and web applications that consume the backend APIs.
@@ -80,57 +79,61 @@ DBOne/
 
 ---
 
-### Integrating the JAR into Your Project
+### Database-Specific Query Endpoints
 
-1. **Add the Dependency**:
-   If published to a Maven repository, include the following dependency in your `pom.xml`:
-   ```xml
-   <dependency>
-       <groupId>com.acender</groupId>
-       <artifactId>dbone</artifactId>
-       <version>0.0.1-SNAPSHOT</version>
-   </dependency>
-   ```
+#### **1. MySQL Query Execution**
+**Endpoint**: `POST /api/db/mysql/query`
 
-   If the JAR file is provided directly, add it to your project’s classpath.
-
-2. **Using the `DBOneClient`**:
-   Import and use the `DBOneClient` to interact with the APIs.
-
-**Example 1: Testing a Database Connection**
-```java
-import com.acender.dbone.client.DBOneClient;
-
-public class Main {
-    public static void main(String[] args) {
-        DBOneClient client = new DBOneClient("http://localhost:8080/api/db");
-        String response = client.testMySQLConnection("localhost", 3306, "testdb", "root", "password123");
-        System.out.println(response);
-    }
+**Request Body**:
+```json
+{
+    "host": "localhost",
+    "port": 3306,
+    "database": "testdb",
+    "username": "root",
+    "password": "password123",
+    "query": "SELECT * FROM users"
 }
 ```
 
-**Example 2: Running a Custom Query**
-```java
-import com.acender.dbone.client.DBOneClient;
+#### **2. PostgreSQL Query Execution**
+**Endpoint**: `POST /api/db/postgresql/query`
 
-import java.util.Map;
+**Request Body**:
+```json
+{
+    "host": "localhost",
+    "port": 5432,
+    "database": "testdb",
+    "username": "postgres",
+    "password": "password123",
+    "query": "SELECT * FROM employees"
+}
+```
 
-public class QueryExample {
-    public static void main(String[] args) {
-        DBOneClient client = new DBOneClient("http://localhost:8080/api/db");
-        
-        Map<String, Object> result = client.executeQuery(
-            "com.mysql.cj.jdbc.Driver",
-            "localhost",
-            3306,
-            "testdb",
-            "root",
-            "password123",
-            "SELECT * FROM users"
-        );
-        System.out.println(result);
-    }
+#### **3. SQLite Query Execution**
+**Endpoint**: `POST /api/db/sqlite/query`
+
+**Request Body**:
+```json
+{
+    "database": "testdb",
+    "query": "SELECT * FROM products"
+}
+```
+
+#### **4. H2 Query Execution**
+**Endpoint**: `POST /api/db/h2/query`
+
+**Request Body**:
+```json
+{
+    "host": "localhost",
+    "port": 9092,
+    "database": "testdb",
+    "username": "sa",
+    "password": "",
+    "query": "SELECT * FROM orders"
 }
 ```
 
@@ -139,7 +142,7 @@ public class QueryExample {
 ### Testing Database Connections
 
 1. Open the Swagger UI.
-2. Use the following endpoints:
+2. Use the following endpoints to test database connectivity:
    - **MySQL**: `/api/db/mysql/test`
    - **PostgreSQL**: `/api/db/postgresql/test`
    - **SQLite**: `/api/db/sqlite/test`
@@ -159,27 +162,6 @@ public class QueryExample {
 4. Responses:
    - **200 OK**: Connection successful.
    - **400 Bad Request**: Connection failed with an error message.
-
----
-
-### Running Custom Queries
-
-Use the `/api/db/query` endpoint to run custom SQL queries. Example request body:
-
-```json
-{
-    "driverClass": "com.mysql.cj.jdbc.Driver",
-    "host": "localhost",
-    "port": 3306,
-    "database": "testdb",
-    "username": "root",
-    "password": "password123",
-    "query": "SELECT * FROM users"
-}
-```
-
-**Response**:
-- A JSON object containing query results.
 
 ---
 
@@ -204,9 +186,9 @@ Use the `/api/db/query` endpoint to run custom SQL queries. Example request body
    POST /api/db/h2/test
    ```
 
-5. **Run Custom Query**:
+5. **Run Custom Query (MySQL)**:
    ```http
-   POST /api/db/query
+   POST /api/db/mysql/query
    ```
 
 ---
