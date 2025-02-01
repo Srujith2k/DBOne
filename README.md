@@ -10,6 +10,7 @@ DBOne is a powerful and flexible Java-based library designed to connect with var
 - **Database-Specific Query APIs**: Run queries tailored for specific databases via dedicated endpoints.
 - **Swagger Documentation**: Interactive API documentation for easy testing and usage.
 - **Pluggable JAR**: A lightweight JAR file that can be used in Java projects for database connectivity.
+- **DBOneClient Integration**: Java client library for seamless database connectivity in any project.
 - **Extendable**: Future-ready for building desktop and web applications using the provided APIs.
 
 ---
@@ -23,6 +24,7 @@ DBOne is a powerful and flexible Java-based library designed to connect with var
 2. **JAR Integration**:
    - A standalone JAR that can be included in any Java project to manage database connections and execute queries programmatically.
    - Provides flexibility to configure hostnames, ports, databases, usernames, and passwords.
+   - Includes `DBOneClient` for easy interaction with APIs.
 
 3. **Frontend Options**:
    - Plan to develop desktop and web applications that consume the backend APIs.
@@ -35,7 +37,7 @@ DBOne/
 ├── src/main/java/com/acender/dbone
 │   ├── config               # Swagger and global configurations
 │   ├── controller           # REST API controllers for database connectivity
-│   ├── client               # DBOne client for integration into other projects
+│   ├── client               # DBOneClient for integration into other projects
 │   ├── DbOneApplication.java  # Main Spring Boot application class
 ├── src/main/resources
 │   ├── application.properties  # Spring Boot configuration file
@@ -107,7 +109,7 @@ DBOne/
     "database": "testdb",
     "username": "postgres",
     "password": "password123",
-    "query": "SELECT * FROM employees"
+    "query": "SELECT * FROM "Employees"."Department" ORDER BY "Emp_id" ASC"
 }
 ```
 
@@ -134,6 +136,42 @@ DBOne/
     "username": "sa",
     "password": "",
     "query": "SELECT * FROM orders"
+}
+```
+
+---
+
+## Using DBOneClient in Your Java Project
+
+### **Add the Dependency**
+
+If published to Maven Central, add the following dependency to your `pom.xml`:
+```xml
+<dependency>
+    <groupId>com.acender</groupId>
+    <artifactId>dbone</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+### **Example Usage of `DBOneClient`**
+```java
+import com.acender.dbone.client.DBOneClient;
+import java.util.List;
+import java.util.Map;
+
+public class Main {
+    public static void main(String[] args) {
+        DBOneClient client = new DBOneClient("http://localhost:8080/api/db");
+
+        // Test MySQL Connection
+        String connectionResult = client.testMySQLConnection("localhost", 3306, "testdb", "root", "password123");
+        System.out.println(connectionResult);
+
+        // Run a MySQL Query
+        List<Map<String, Object>> queryResult = client.executeMySQLQuery("localhost", 3306, "testdb", "root", "password123", "SELECT * FROM users");
+        System.out.println(queryResult);
+    }
 }
 ```
 
